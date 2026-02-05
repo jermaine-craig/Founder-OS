@@ -21,14 +21,7 @@ A personal operating system that handles your email, calendar, and meeting prep 
 curl -fsSL https://os.engineering/install | bash
 ```
 
-### Option 2: Homebrew (macOS/Linux)
-
-```bash
-brew install jermaine-craig/os/founder-os
-founder-os-setup
-```
-
-### Option 3: Manual install
+### Option 2: Manual install
 
 ```bash
 # Clone the repo
