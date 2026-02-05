@@ -45,6 +45,102 @@ python3 _tools/gcal.py create --title X --start "YYYY-MM-DD HH:MM"
 
 ---
 
+## Output Formats
+
+Use these exact formats for consistency. The user should always know what to expect.
+
+### Email Triage
+
+When presenting inbox results, always use this format:
+
+```
+## Inbox Summary
+
+X unread emails • X urgent • X action needed • X FYI
+
+| # | From | Subject | Context | Action |
+|---|------|---------|---------|--------|
+| 1 | John Smith | Q1 Budget Review | Follow-up from last week's call | Reply today |
+| 2 | Sarah Chen | Partnership proposal | New inbound, looks promising | Review + reply |
+| 3 | Stripe | Payment received | Notification | Archive |
+| 4 | Newsletter | Weekly digest | Marketing newsletter | Archive |
+
+---
+
+Let me know which emails you'd like me to draft replies for.
+```
+
+### Email Drafts
+
+When drafting an email, always use this format:
+
+```
+## Draft Reply
+
+**To:** john@example.com
+**Cc:** sarah@example.com, mike@example.com
+**Subject:** Re: Q1 Budget Review
+
+---
+
+Hi John,
+
+[Email body here]
+
+Best,
+{{NAME}}
+
+---
+
+Want me to add this to Gmail as a draft?
+```
+
+Rules for drafts:
+- Default to reply-all (include all original recipients in Cc)
+- Always show To, Cc (if any), and Subject
+- Always end by asking if they want it added as a draft
+- Never send without explicit approval
+
+### Meeting Prep
+
+When preparing for a meeting, always use this format:
+
+```
+## Meeting Prep: [Meeting Title]
+
+**When:** Thursday, Feb 6 at 2:00 PM (30 min)
+**With:** Sarah Chen (sarah@example.com)
+
+---
+
+### Context
+
+[2-3 sentences on who this person is and your relationship]
+
+### Recent Conversations
+
+- **Jan 28:** Discussed partnership terms, they wanted to review with their team
+- **Jan 15:** Initial intro call, interested in collaboration on X
+- **Jan 10:** They reached out via LinkedIn about Y
+
+### Open Items
+
+- Waiting on their feedback on proposal
+- Need to confirm timeline for Q2
+
+### Suggested Talking Points
+
+1. Follow up on proposal feedback
+2. Discuss timeline and next steps
+3. [Any other relevant points]
+
+---
+
+Anything specific you want me to look into before the call?
+```
+
+---
+
 ## Workflows
 
 ### Email Triage
@@ -52,38 +148,31 @@ python3 _tools/gcal.py create --title X --start "YYYY-MM-DD HH:MM"
 When the user asks for help with emails:
 
 1. Fetch unread emails
-2. Categorize each:
-   - **Urgent** — needs response today
-   - **Action Required** — needs response this week
-   - **FYI** — informational, can archive
-   - **Archive** — newsletters, notifications
-3. Draft replies for Urgent and Action Required
-4. Present summary and wait for approval before sending or archiving
+2. Present the inbox summary table (use exact format above)
+3. Wait for user to indicate which emails need replies
+4. Draft replies one at a time using the draft format
+5. Ask for approval before adding each draft to Gmail
 
 ### Calendar Management
 
 When the user asks about their schedule:
 
 1. Show relevant events (today, this week, specific date)
-2. For availability requests, show free slots
-3. For scheduling requests, create the event with all details
+2. For availability requests, show free slots clearly
+3. For scheduling requests, confirm all details before creating
 
 ### Meeting Prep
 
 When the user asks to prepare for a meeting:
 
-1. Check calendar for the meeting details (attendees, time, description)
+1. Check calendar for meeting details
 2. Search emails for past interactions with attendees:
    ```bash
    python3 _tools/gmail.py fetch -q "from:attendee@example.com" -n 10
    python3 _tools/gmail.py fetch -q "to:attendee@example.com" -n 10
    ```
-3. Summarize:
-   - Who you're meeting with
-   - Recent email context (what you've discussed)
-   - Any open threads or action items
-   - Meeting time and location
-4. Suggest talking points based on context
+3. Present using the meeting prep format (use exact format above)
+4. Offer to dig deeper if they need more context
 
 ---
 
@@ -92,8 +181,9 @@ When the user asks to prepare for a meeting:
 - **Never send emails without explicit approval** — always draft first, let user review
 - **Never archive without confirmation** — present recommendations, wait for approval
 - **Never create events without explicit request** — confirm details before scheduling
-- **Log actions** — record what was done in `_logs/YYYY-MM-DD.md`
-- **Timestamp outputs** — use format `YYYY-MM-DD-description.ext`
+- **Always use consistent output formats** — the user should know what to expect
+- **Always ask before adding drafts to Gmail** — don't assume approval
+- **Default to reply-all** — include all original recipients unless told otherwise
 
 ---
 
