@@ -8,11 +8,11 @@ Once the tap is published, users can install with:
 
 ```bash
 # Option 1: Add tap then install
-brew tap jermaine-craig/founder-os
+brew tap jermaine-craig/os
 brew install founder-os
 
 # Option 2: One-liner
-brew install jermaine-craig/founder-os/founder-os
+brew install jermaine-craig/os/founder-os
 ```
 
 After installation:
@@ -31,14 +31,14 @@ cd $(brew --prefix)/Founder-OS && claude
 
 1. **Create a new repo for the tap**
 
-   Create a repo named `homebrew-founder-os` at:
-   `https://github.com/jermaine-craig/homebrew-founder-os`
+   Create a repo named `homebrew-os` at:
+   `https://github.com/jermaine-craig/homebrew-os`
 
 2. **Add the formula**
 
    Copy `Formula/founder-os.rb` to the tap repo:
    ```
-   homebrew-founder-os/
+   homebrew-os/
    └── Formula/
        └── founder-os.rb
    ```
@@ -78,7 +78,7 @@ When releasing a new version:
 1. Tag the release: `git tag v1.1.0 && git push origin v1.1.0`
 2. Update the URL version in the formula
 3. Update the SHA256 hash
-4. Push to the homebrew-founder-os repo
+4. Push to the homebrew-os repo
 
 ### Testing Locally
 

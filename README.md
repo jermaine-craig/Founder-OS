@@ -24,7 +24,7 @@ curl -fsSL https://os.engineering/install | bash
 ### Option 2: Homebrew (macOS/Linux)
 
 ```bash
-brew install jermaine-craig/founder-os/founder-os
+brew install jermaine-craig/os/founder-os
 founder-os-setup
 ```
 

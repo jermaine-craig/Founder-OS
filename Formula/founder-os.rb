@@ -1,6 +1,6 @@
 # Homebrew formula for Founder OS
-# Install: brew tap jermaine-craig/founder-os && brew install founder-os
-# Or:      brew install jermaine-craig/founder-os/founder-os
+# Install: brew tap jermaine-craig/os && brew install founder-os
+# Or:      brew install jermaine-craig/os/founder-os
 
 class FounderOs < Formula
   desc "Personal operating system for email, calendar, and meeting prep using Claude"
