@@ -49,6 +49,11 @@ python3 _tools/gcal.py create --title X --start "YYYY-MM-DD HH:MM"
 
 Use these exact formats for consistency. The user should always know what to expect.
 
+**Reference the templates for examples:**
+- `assistant/templates/email-triage.md` — Inbox summary format
+- `assistant/templates/email-draft.md` — Draft email format
+- `assistant/templates/meeting-prep.md` — Meeting prep format
+
 ### Email Triage
 
 When presenting inbox results, always use this format:
