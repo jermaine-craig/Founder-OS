@@ -15,22 +15,30 @@ A personal operating system that handles your email, calendar, and meeting prep 
 
 ## Quick Start
 
-### 1. Clone this repo
+### Option 1: One-line install (recommended)
 
 ```bash
+curl -fsSL https://os.engineering/install | bash
+```
+
+### Option 2: Homebrew (macOS/Linux)
+
+```bash
+brew install jermaine-craig/founder-os/founder-os
+founder-os-setup
+```
+
+### Option 3: Manual install
+
+```bash
+# Clone the repo
 git clone https://github.com/jermaine-craig/Founder-OS.git
 cd Founder-OS
-```
 
-### 2. Install dependencies
-
-```bash
+# Install dependencies
 pip install google-auth google-auth-oauthlib google-api-python-client
-```
 
-### 3. Run setup wizard
-
-```bash
+# Run setup wizard
 python3 setup.py
 ```
 
@@ -40,13 +48,13 @@ The wizard will guide you through:
 - Authenticating your account
 - Configuring your timezone
 
-### 4. Open Claude Code
+### Then open Claude Code
 
 ```bash
 claude
 ```
 
-### 5. Start talking
+### Start talking
 
 Just ask for what you need:
 
