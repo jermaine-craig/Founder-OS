@@ -1,0 +1,34 @@
+# Credentials - NEVER commit these
+_tools/.credentials/client_secret.json
+_tools/.credentials/gmail_token.json
+_tools/.credentials/calendar_token.json
+_tools/.credentials/*.json
+!_tools/.credentials/README.md
+
+# Environment
+.env
+.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs (optional - uncomment to ignore)
+# _logs/
+
+# Inbox exports (optional - uncomment to ignore)
+# inbox/
