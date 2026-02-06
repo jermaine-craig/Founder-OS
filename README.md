@@ -15,33 +15,27 @@ A personal operating system that handles your email, calendar, and meeting prep 
 
 ## Quick Start
 
-### Option 1: One-line install (recommended)
+### Install
 
 ```bash
 curl -fsSL https://os.engineering/install | bash
 ```
 
-### Option 2: Manual install
+This downloads Founder OS into a `founder-os` folder wherever you run it.
+
+### Run the setup wizard
 
 ```bash
-# Clone the repo
-git clone https://github.com/jermaine-craig/Founder-OS.git
-cd Founder-OS
-
-# Install dependencies
-pip install google-auth google-auth-oauthlib google-api-python-client
-
-# Run setup wizard
-python3 setup.py
+cd founder-os && ./setup
 ```
 
-The wizard will guide you through:
+The wizard will walk you through:
 - Creating a Google Cloud project
 - Enabling Gmail and Calendar APIs
-- Authenticating your account
-- Configuring your timezone
+- Connecting your Google account
+- Setting your timezone
 
-### Then open Claude Code
+### Open Claude Code
 
 ```bash
 claude
@@ -122,7 +116,8 @@ founder-os/
 ├── _logs/                # Daily execution logs
 ├── inbox/                # Email exports
 ├── assistant/            # Workflow documentation
-└── setup.py              # Setup wizard
+├── setup                 # Setup wizard
+└── setup.py              # Setup wizard (Python)
 ```
 
 ---
@@ -139,7 +134,7 @@ founder-os/
 
 ### "Client secret not found"
 
-Run the setup wizard: `python3 setup.py`
+Run the setup wizard: `./setup`
 
 ### "Token expired"
 
@@ -157,4 +152,4 @@ MIT — use it however you want.
 
 ---
 
-Built by [Other Shapes](https://othershapes.co)
+Built by [Other Shapes](https://other-shapes.com)
