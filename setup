@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+#
+# Founder OS Setup Wizard
+#
+# Usage:
+#   ./setup
+#
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PYTHON_CMD="${PYTHON_CMD:-python3}"
+
+exec "$PYTHON_CMD" "$SCRIPT_DIR/setup.py" "$@"

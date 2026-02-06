@@ -177,7 +177,7 @@ install_dependencies() {
 print_setup_instructions() {
     print_step "Next: Run the setup wizard"
     echo ""
-    echo "  cd $INSTALL_DIR && python3 setup.py"
+    echo "  cd $INSTALL_DIR && ./setup"
     echo ""
     echo "The setup wizard will guide you through:"
     echo "  1. Creating a Google Cloud project"
