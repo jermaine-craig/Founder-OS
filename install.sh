@@ -19,7 +19,7 @@ NC='\033[0m' # No Color
 
 # Config
 REPO_URL="https://github.com/jermaine-craig/Founder-OS.git"
-INSTALL_DIR="$HOME/founder-os"
+INSTALL_DIR="$PWD/founder-os"
 MIN_PYTHON_VERSION="3.8"
 
 print_banner() {
