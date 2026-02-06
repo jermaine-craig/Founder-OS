@@ -164,7 +164,7 @@ install_dependencies() {
 
     cd "$INSTALL_DIR"
 
-    "$PYTHON_CMD" -m pip install --quiet --upgrade \
+    "$PYTHON_CMD" -m pip install --quiet --upgrade --user \
         google-auth \
         google-auth-oauthlib \
         google-api-python-client
