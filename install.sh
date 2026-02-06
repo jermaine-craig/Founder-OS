@@ -173,29 +173,17 @@ install_dependencies() {
     echo ""
 }
 
-# Run setup wizard
-run_setup() {
-    print_step "Running setup wizard..."
+# Print setup instructions
+print_setup_instructions() {
+    print_step "Next: Run the setup wizard"
+    echo ""
+    echo "  cd $INSTALL_DIR && ./setup"
     echo ""
     echo "The setup wizard will guide you through:"
     echo "  1. Creating a Google Cloud project"
     echo "  2. Enabling Gmail and Calendar APIs"
     echo "  3. Authenticating your account"
     echo "  4. Configuring your timezone"
-    echo ""
-
-    read -p "Run setup wizard now? [Y/n] " -n 1 -r
-    echo ""
-
-    if [[ ! $REPLY =~ ^[Nn]$ ]]; then
-        cd "$INSTALL_DIR"
-        "$PYTHON_CMD" setup.py
-    else
-        echo ""
-        print_warning "Skipping setup wizard"
-        echo "Run it later with: cd $INSTALL_DIR && python3 setup.py"
-    fi
-
     echo ""
 }
 
@@ -232,7 +220,7 @@ main() {
     check_prerequisites
     install_repo
     install_dependencies
-    run_setup
+    print_setup_instructions
     print_complete
 }
 
