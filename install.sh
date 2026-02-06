@@ -173,44 +173,19 @@ install_dependencies() {
     echo ""
 }
 
-# Print setup instructions
-print_setup_instructions() {
-    print_step "Next: Run the setup wizard"
+# Print next steps
+print_next_steps() {
     echo ""
-    echo "  cd $INSTALL_DIR && ./setup"
+    echo "  Files downloaded to $INSTALL_DIR"
     echo ""
-    echo "The setup wizard will guide you through:"
-    echo "  1. Creating a Google Cloud project"
-    echo "  2. Enabling Gmail and Calendar APIs"
-    echo "  3. Authenticating your account"
-    echo "  4. Configuring your timezone"
+    echo "  To finish setting up, run:"
     echo ""
-}
-
-# Print completion message
-print_complete() {
+    echo "    cd $INSTALL_DIR && ./setup"
     echo ""
-    echo -e "${GREEN}${BOLD}"
-    echo "  ╔═══════════════════════════════════════╗"
-    echo "  ║       Installation Complete!          ║"
-    echo "  ╚═══════════════════════════════════════╝"
-    echo -e "${NC}"
+    echo "  This will connect your Google account"
+    echo "  (Gmail and Calendar) and configure your timezone."
     echo ""
-    echo "  Your Founder OS is installed at:"
-    echo "    ${BOLD}$INSTALL_DIR${NC}"
-    echo ""
-    echo "  ${BOLD}Next steps:${NC}"
-    echo ""
-    echo "  1. Open Claude Code in the Founder OS directory:"
-    echo "     ${BLUE}cd $INSTALL_DIR && claude${NC}"
-    echo ""
-    echo "  2. Start talking:"
-    echo "     ${BLUE}\"Help me with my emails\"${NC}"
-    echo "     ${BLUE}\"What's on my calendar this week?\"${NC}"
-    echo ""
-    echo "  ${BOLD}Need help?${NC}"
-    echo "    See the README: $INSTALL_DIR/README.md"
-    echo "    Website: https://os.engineering"
+    echo "  Need help? Visit https://os.engineering"
     echo ""
 }
 
@@ -220,8 +195,7 @@ main() {
     check_prerequisites
     install_repo
     install_dependencies
-    print_setup_instructions
-    print_complete
+    print_next_steps
 }
 
 main "$@"
