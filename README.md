@@ -12,29 +12,26 @@ A personal operating system that handles your email, calendar, and meeting prep,
 ## Quick Start
 
 ```bash
-# Clone the repo
 git clone https://github.com/jermaine-craig/Founder-OS.git
-cd Founder-OS
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run setup wizard
+cd Founder-OS/App
 python3 setup.py
 ```
 
-The wizard guides you through:
-- Creating a Google Cloud project
-- Enabling Gmail, Calendar, and Drive APIs
-- Authenticating your account
-- Configuring your name and timezone
+The wizard handles everything: installing dependencies, connecting your Google account, and configuring preferences. It walks you through:
+
+- Creating a Google Cloud project (Gmail, Calendar, Drive APIs)
+- Authenticating with a single OAuth flow
+- Setting your name, timezone, and meeting preferences
 - Optional Perplexity API key for research
+- Testing all connections
 
 Then open Claude Code:
 
 ```bash
 claude
 ```
+
+The agent learns as you use it. Tell it to adjust its tone, change formatting, or update preferences and it'll remember.
 
 ## Usage
 
