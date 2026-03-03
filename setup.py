@@ -443,17 +443,27 @@ def print_success(name):
     print(f"""
 Welcome, {name}. Your Founder OS is ready.
 
-Try these commands in the terminal:
-  python3 tools/gmail.py fetch
-  python3 tools/gcal.py list
-  python3 tools/gcal.py availability $(date +%Y-%m-%d)
-  python3 tools/gdrive.py list
+Open Claude Code and get started:
 
-Or open Claude Code and try:
+  claude
+
+Then just ask for what you need:
+
+  "Help me with my emails"
+  "What's on my calendar this week?"
+  "Prep for my call with Sarah"
+  "When am I free on Friday?"
+
+Or use slash commands:
+
   /email           Process your inbox
   /calendar        Check your schedule
   /meeting         Prepare for a meeting
   /research        Research a topic
+
+This agent learns as you use it. Feel free to tell it to adjust
+its tone, change how it formats things, or update any preferences.
+It'll remember for next time.
 
 Need help? See README.md for documentation.
 """)
