@@ -392,9 +392,9 @@ Try these commands in the terminal:
   python3 tools/gdrive.py list
 
 Or open Claude Code and try:
-  /triage          Process your inbox
+  /email           Process your inbox
   /calendar        Check your schedule
-  /meeting-prep    Prepare for a meeting
+  /meeting         Prepare for a meeting
   /research        Research a topic
 
 Need help? See README.md for documentation.

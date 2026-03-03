@@ -57,9 +57,9 @@ python3 tools/gdrive.py info FILE_ID                   # File metadata
 
 Use slash commands for guided workflows:
 
-- `/triage` process your inbox
+- `/email` process your inbox
 - `/calendar` check schedule or create events
-- `/meeting-prep` prepare for an upcoming meeting
+- `/meeting` prepare for an upcoming meeting
 - `/research` research a topic (requires Perplexity)
 
 ## Output Formats

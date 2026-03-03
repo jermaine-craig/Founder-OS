@@ -52,9 +52,9 @@ Or use slash commands for guided workflows:
 
 | Command | What it does |
 |---------|-------------|
-| `/triage` | Process your inbox, categorise, draft replies |
+| `/email` | Process your inbox, categorise, draft replies |
 | `/calendar` | Check schedule, availability, create events |
-| `/meeting-prep` | Prepare for a meeting with full context |
+| `/meeting` | Prepare for a meeting with full context |
 | `/research` | Research a topic with Perplexity |
 
 ## How It Works
@@ -77,9 +77,9 @@ founder-os/
 ├── .claude/
 │   ├── CLAUDE.md              # System prompt and rules
 │   └── skills/                # Slash command workflows
-│       ├── triage/
+│       ├── email/
 │       ├── calendar/
-│       ├── meeting-prep/
+│       ├── meeting/
 │       └── research/
 ├── tools/                     # Python API tools
 │   ├── auth.py                # Shared Google OAuth
