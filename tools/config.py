@@ -17,12 +17,24 @@ DEFAULTS = {
     'name': '',
     'timezone': 'Europe/London',
     'perplexity_api_key': '',
+    'meeting_naming': '{name} x {participants} - {context}',
+    'preferred_meeting_duration': 30,
+    'preferred_meeting_days': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    'preferred_meeting_times': {'start': '09:00', 'end': '17:00'},
 }
 
 
 def load_config():
-    """Load user config. Returns defaults if file missing."""
-    config = dict(DEFAULTS)
+    """Load user config. Returns defaults merged with stored values."""
+    config = {}
+    # Deep copy defaults so nested dicts/lists aren't shared
+    for k, v in DEFAULTS.items():
+        if isinstance(v, dict):
+            config[k] = dict(v)
+        elif isinstance(v, list):
+            config[k] = list(v)
+        else:
+            config[k] = v
     if CONFIG_PATH.exists():
         with open(CONFIG_PATH) as f:
             stored = json.load(f)
@@ -45,3 +57,18 @@ def get_timezone():
 def get_name():
     """Return configured user name."""
     return load_config()['name']
+
+
+def get_meeting_naming():
+    """Return the meeting naming template string."""
+    return load_config()['meeting_naming']
+
+
+def get_meeting_preferences():
+    """Return meeting preferences: duration, days, and time window."""
+    config = load_config()
+    return {
+        'duration': config['preferred_meeting_duration'],
+        'days': config['preferred_meeting_days'],
+        'times': config['preferred_meeting_times'],
+    }

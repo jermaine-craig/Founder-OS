@@ -23,13 +23,13 @@ def get_gmail():
     return get_service('gmail', 'v1')
 
 
-def fetch_emails(max_results=20, query='is:unread', output_file=None):
+def fetch_emails(max_results=20, query='in:inbox', output_file=None):
     """
     Fetch emails from Gmail and save to output folder.
 
     Args:
         max_results: Maximum number of emails to fetch.
-        query: Gmail search query (default: unread emails).
+        query: Gmail search query (default: inbox emails).
         output_file: Output filename (default: YYYY-MM-DD-emails.json).
 
     Returns:
@@ -248,7 +248,7 @@ def main():
     # Fetch
     fetch_parser = subparsers.add_parser('fetch', help='Fetch emails from Gmail')
     fetch_parser.add_argument('-n', '--max', type=int, default=20, help='Max emails to fetch')
-    fetch_parser.add_argument('-q', '--query', default='is:unread', help='Gmail search query')
+    fetch_parser.add_argument('-q', '--query', default='in:inbox', help='Gmail search query')
     fetch_parser.add_argument('-o', '--output', help='Output filename')
 
     # Draft

@@ -29,7 +29,7 @@ All tools live in `tools/` and are run via the command line.
 ### Gmail
 
 ```bash
-python3 tools/gmail.py fetch                          # Get unread emails
+python3 tools/gmail.py fetch                          # Get inbox emails
 python3 tools/gmail.py fetch -q "from:someone@x.com"  # Search emails
 python3 tools/gmail.py fetch -n 30                     # Fetch up to 30
 python3 tools/gmail.py draft --to X --subject Y --body Z [--reply-to ID] [--cc X]
@@ -82,5 +82,7 @@ Temporary files go in `_temp/`.
 - **Never send emails without explicit approval.** Always draft first, let user review.
 - **Never archive without confirmation.** Present recommendations, wait for go-ahead.
 - **Never create events without explicit request.** Confirm all details first.
+- **Use the naming convention for events:** `"{name} x {participants} - {context}"` (e.g. "Jermaine x Sarah - Series A sync").
+- **Respect meeting preferences** from config: preferred duration, days, and time window.
 - **Default to reply-all** for email replies.
 - **Credentials never appear in outputs.**

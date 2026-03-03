@@ -270,6 +270,61 @@ def collect_user_details():
     if timezone is None:
         sys.exit(0)
 
+    # Meeting preferences
+    print("\n  Meeting preferences (used when scheduling)")
+
+    duration_choices = ['15 min', '30 min', '45 min', '60 min']
+    default_duration = existing.get('preferred_meeting_duration', 30)
+    default_dur_label = f"{default_duration} min"
+    if default_dur_label not in duration_choices:
+        default_dur_label = '30 min'
+
+    duration_answer = questionary.select(
+        "Default meeting length:",
+        choices=duration_choices,
+        default=default_dur_label
+    ).ask()
+
+    if duration_answer is None:
+        sys.exit(0)
+    meeting_duration = int(duration_answer.split()[0])
+
+    all_days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    default_days = existing.get('preferred_meeting_days', all_days[:5])
+
+    meeting_days = questionary.checkbox(
+        "Preferred meeting days:",
+        choices=[
+            questionary.Choice(day, checked=(day in default_days))
+            for day in all_days
+        ]
+    ).ask()
+
+    if meeting_days is None:
+        sys.exit(0)
+    if not meeting_days:
+        meeting_days = all_days[:5]
+
+    default_times = existing.get('preferred_meeting_times', {'start': '09:00', 'end': '17:00'})
+
+    start_time = questionary.text(
+        "Earliest meeting time (HH:MM):",
+        default=default_times.get('start', '09:00')
+    ).ask()
+
+    if start_time is None:
+        sys.exit(0)
+
+    end_time = questionary.text(
+        "Latest meeting end time (HH:MM):",
+        default=default_times.get('end', '17:00')
+    ).ask()
+
+    if end_time is None:
+        sys.exit(0)
+
+    meeting_times = {'start': start_time.strip(), 'end': end_time.strip()}
+
     # Perplexity API key (optional)
     default_key = existing.get('perplexity_api_key', '')
     has_key_prompt = " (leave blank to skip)" if not default_key else " (Enter to keep existing)"
@@ -283,14 +338,14 @@ def collect_user_details():
         perplexity_key = ''
     perplexity_key = perplexity_key.strip()
 
-    return name, timezone, perplexity_key
+    return name, timezone, meeting_duration, meeting_days, meeting_times, perplexity_key
 
 
 # ---------------------------------------------------------------------------
 # Step 6: Save config
 # ---------------------------------------------------------------------------
 
-def save_user_config(name, timezone, perplexity_key):
+def save_user_config(name, timezone, meeting_duration, meeting_days, meeting_times, perplexity_key):
     """Save user config to .credentials/config.json and update CLAUDE.md."""
     sys.path.insert(0, str(ROOT_DIR))
     from tools.config import save_config
@@ -298,6 +353,9 @@ def save_user_config(name, timezone, perplexity_key):
     config = {
         'name': name,
         'timezone': timezone,
+        'preferred_meeting_duration': meeting_duration,
+        'preferred_meeting_days': meeting_days,
+        'preferred_meeting_times': meeting_times,
         'perplexity_api_key': perplexity_key,
     }
     save_config(config)
@@ -429,11 +487,11 @@ def main():
 
     # Step 5: User details
     print_step(5, TOTAL_STEPS, "Your details")
-    name, timezone, perplexity_key = collect_user_details()
+    name, timezone, meeting_duration, meeting_days, meeting_times, perplexity_key = collect_user_details()
 
     # Step 6: Save config
     print_step(6, TOTAL_STEPS, "Saving configuration")
-    save_user_config(name, timezone, perplexity_key)
+    save_user_config(name, timezone, meeting_duration, meeting_days, meeting_times, perplexity_key)
 
     # Step 7: Test connections
     print_step(7, TOTAL_STEPS, "Testing connections")

@@ -68,3 +68,57 @@ class TestLoadConfig:
         assert loaded['name'] == 'Jermaine'
         assert loaded['timezone'] == DEFAULTS['timezone']
         assert loaded['perplexity_api_key'] == DEFAULTS['perplexity_api_key']
+
+    def test_meeting_defaults_present(self, tmp_config):
+        """Default config should include meeting preferences."""
+        from tools.config import load_config
+
+        config = load_config()
+
+        assert config['meeting_naming'] == '{name} x {participants} - {context}'
+        assert config['preferred_meeting_duration'] == 30
+        assert config['preferred_meeting_days'] == ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+        assert config['preferred_meeting_times'] == {'start': '09:00', 'end': '17:00'}
+
+    def test_get_meeting_naming(self, tmp_config):
+        """get_meeting_naming should return the naming template."""
+        from tools.config import get_meeting_naming
+
+        result = get_meeting_naming()
+        assert '{name}' in result
+        assert '{participants}' in result
+        assert '{context}' in result
+
+    def test_get_meeting_preferences(self, tmp_config):
+        """get_meeting_preferences should return duration, days, and times."""
+        from tools.config import get_meeting_preferences, save_config
+
+        save_config({
+            'preferred_meeting_duration': 45,
+            'preferred_meeting_days': ['Monday', 'Wednesday', 'Friday'],
+            'preferred_meeting_times': {'start': '10:00', 'end': '16:00'},
+        })
+
+        prefs = get_meeting_preferences()
+
+        assert prefs['duration'] == 45
+        assert prefs['days'] == ['Monday', 'Wednesday', 'Friday']
+        assert prefs['times'] == {'start': '10:00', 'end': '16:00'}
+
+    def test_meeting_preferences_saved_and_loaded(self, tmp_config):
+        """Meeting preferences should round-trip through save/load."""
+        from tools.config import load_config, save_config
+
+        config = {
+            'name': 'Jermaine',
+            'preferred_meeting_duration': 15,
+            'preferred_meeting_days': ['Tuesday', 'Thursday'],
+            'preferred_meeting_times': {'start': '08:00', 'end': '12:00'},
+        }
+        save_config(config)
+
+        loaded = load_config()
+
+        assert loaded['preferred_meeting_duration'] == 15
+        assert loaded['preferred_meeting_days'] == ['Tuesday', 'Thursday']
+        assert loaded['preferred_meeting_times']['start'] == '08:00'

@@ -19,7 +19,7 @@ class TestFetchEmails:
         from tools.gmail import fetch_emails
 
         with patch('tools.gmail.OUTPUT_DIR', tmp_path):
-            emails = fetch_emails(max_results=3, query='is:unread')
+            emails = fetch_emails(max_results=3, query='in:inbox')
 
         assert emails is not None
         assert len(emails) == 3

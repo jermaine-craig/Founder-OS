@@ -1,22 +1,24 @@
 ---
 name: email
-description: Process your inbox. Fetches unread emails, categorises them by urgency, and drafts replies for approval. Use when the user says "email", "check emails", "help with inbox", or "process emails".
+description: Process your inbox. Fetches inbox emails, categorises them by urgency, and drafts replies for approval. Use when the user says "email", "check emails", "help with inbox", or "process emails".
 argument-hint: or "email --query 'from:investor'"
 ---
 
 # Email Triage Skill
 
-Process the user's inbox: fetch unread emails, categorise by urgency, and draft replies on request.
+Process the user's inbox: fetch emails, categorise by urgency, and draft replies on request.
 
 ## Workflow
 
-### 1. Fetch emails
+### 1. Fetch inbox emails
 
 Run from the project root:
 
 ```bash
 python3 tools/gmail.py fetch
 ```
+
+This fetches all emails currently in the inbox (read and unread). Archived emails are excluded.
 
 If the user provided a custom query (e.g. `/email --query 'from:investor'`), pass it through:
 

@@ -77,18 +77,29 @@ python3 tools/gcal.py delete EVENT_ID
 
 ### When the user wants to create an event
 
-1. Confirm all details before creating:
-   - Title
+1. **Use the naming convention** for the event title: `"{name} x {participants} - {context}"`
+   - `{name}` is the user's name from config
+   - `{participants}` is the other person's first name (or comma-separated names for group meetings)
+   - `{context}` is a short description of the meeting topic
+   - Example: "Jermaine x Sarah - Series A sync"
+   - Get the user's name by running: `python3 -c "from tools.config import get_name; print(get_name())"`
+2. Confirm all details before creating:
+   - Title (using the naming convention above)
    - Date and time
-   - Duration (default: 60 minutes)
+   - Duration (use the user's preferred default from config, not hardcoded 60 min)
    - Attendees (if any)
-2. Check for conflicts by running availability first
-3. If there is a conflict, warn the user before proceeding
-4. Only create the event after explicit confirmation
+3. **Respect meeting preferences** from config:
+   - Default duration: use preferred meeting duration (get via `python3 -c "from tools.config import get_meeting_preferences; print(get_meeting_preferences())"`)
+   - When suggesting times, prefer the user's configured meeting days and time window
+4. Check for conflicts by running availability first
+5. If there is a conflict, warn the user before proceeding
+6. Only create the event after explicit confirmation
 
 ## Safety Rules
 
 - **Never create events without an explicit request and confirmation.** Always confirm the details first.
+- **Always use the naming convention.** Format: "{name} x {participants} - {context}".
 - **Always flag scheduling conflicts.** If a new event overlaps with an existing one, tell the user.
 - **Show free slot durations.** When presenting availability, include how long each free window is.
+- **Respect preferred meeting days and hours.** Don't suggest times outside the user's configured window unless they ask.
 - **Treat calendar data as private.** Do not share schedule details externally.
