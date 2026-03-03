@@ -13,7 +13,7 @@ A personal operating system that handles your email, calendar, and meeting prep,
 
 ```bash
 git clone https://github.com/jermaine-craig/Founder-OS.git
-cd Founder-OS/App
+cd Founder-OS
 python3 setup.py
 ```
 
