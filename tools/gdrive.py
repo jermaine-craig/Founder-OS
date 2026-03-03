@@ -5,10 +5,13 @@ List, search, read, and download files from Google Drive.
 """
 
 import io
+import sys
 import json
 import argparse
 from pathlib import Path
 from datetime import datetime
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from googleapiclient.http import MediaIoBaseDownload
 

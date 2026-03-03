@@ -4,10 +4,14 @@ Google Calendar API tool for Founder OS.
 List, create, check availability, and delete calendar events.
 """
 
+import sys
 import json
 import argparse
+from pathlib import Path
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from tools.auth import get_service
 from tools.config import OUTPUT_DIR, get_timezone

@@ -4,11 +4,15 @@ Gmail API tool for Founder OS.
 Fetches emails, creates drafts, archives messages, and downloads attachments.
 """
 
+import sys
 import json
 import html
 import base64
 import argparse
+from pathlib import Path
 from datetime import datetime
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from tools.auth import get_service
 from tools.config import OUTPUT_DIR, TEMP_DIR
