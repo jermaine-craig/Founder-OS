@@ -39,7 +39,7 @@ Assign exactly one action to every email:
 
 ### 3. Present the inbox summary
 
-Use the exact format from `assistant/templates/email-triage.md`:
+Use the exact format from `templates/email-triage.md`:
 
 ```
 ## Inbox Summary
@@ -67,7 +67,7 @@ Do NOT draft anything until the user tells you which emails to reply to. This is
 
 ### 5. Draft replies
 
-When the user picks emails to reply to, draft each reply using the format from `assistant/templates/email-draft.md`:
+When the user picks emails to reply to, draft each reply using the format from `templates/email-draft.md`:
 
 ```
 ## Draft Reply

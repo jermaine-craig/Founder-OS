@@ -1,0 +1,58 @@
+{
+  "list_response": {
+    "kind": "calendar#events",
+    "summary": "primary",
+    "items": [
+      {
+        "id": "evt001",
+        "summary": "Team standup",
+        "start": {
+          "dateTime": "2026-03-03T09:00:00+00:00",
+          "timeZone": "Europe/London"
+        },
+        "end": {
+          "dateTime": "2026-03-03T09:30:00+00:00",
+          "timeZone": "Europe/London"
+        },
+        "htmlLink": "https://calendar.google.com/event?eid=evt001",
+        "description": "Daily standup with the engineering team",
+        "attendees": [
+          {"email": "alice@example.com"},
+          {"email": "bob@example.com"}
+        ]
+      },
+      {
+        "id": "evt002",
+        "summary": "Board meeting",
+        "start": {
+          "dateTime": "2026-03-03T14:00:00+00:00",
+          "timeZone": "Europe/London"
+        },
+        "end": {
+          "dateTime": "2026-03-03T15:30:00+00:00",
+          "timeZone": "Europe/London"
+        },
+        "htmlLink": "https://calendar.google.com/event?eid=evt002",
+        "location": "Boardroom 1",
+        "description": "Quarterly board review",
+        "attendees": [
+          {"email": "chair@example.com"},
+          {"email": "cfo@example.com"},
+          {"email": "cto@example.com"}
+        ]
+      },
+      {
+        "id": "evt003",
+        "summary": "Product launch day",
+        "start": {
+          "date": "2026-03-05"
+        },
+        "end": {
+          "date": "2026-03-06"
+        },
+        "htmlLink": "https://calendar.google.com/event?eid=evt003",
+        "description": "Official product launch"
+      }
+    ]
+  }
+}

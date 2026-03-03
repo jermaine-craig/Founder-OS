@@ -1,0 +1,85 @@
+{
+  "list_response": {
+    "messages": [
+      {"id": "msg001", "threadId": "thread001"},
+      {"id": "msg002", "threadId": "thread002"},
+      {"id": "msg003", "threadId": "thread003"}
+    ],
+    "resultSizeEstimate": 3
+  },
+  "messages": {
+    "msg001": {
+      "id": "msg001",
+      "threadId": "thread001",
+      "labelIds": ["INBOX", "UNREAD"],
+      "snippet": "Hi, just checking in on the project timeline.",
+      "payload": {
+        "headers": [
+          {"name": "From", "value": "alice@example.com"},
+          {"name": "To", "value": "jermaine@example.com"},
+          {"name": "Subject", "value": "Project timeline update"},
+          {"name": "Date", "value": "Mon, 2 Mar 2026 10:30:00 +0000"}
+        ],
+        "mimeType": "text/plain",
+        "body": {
+          "data": "SGksIGp1c3QgY2hlY2tpbmcgaW4gb24gdGhlIHByb2plY3QgdGltZWxpbmUuIENhbiB3ZSBzeW5jIHRoaXMgd2Vlaz8="
+        }
+      }
+    },
+    "msg002": {
+      "id": "msg002",
+      "threadId": "thread002",
+      "labelIds": ["INBOX", "UNREAD", "IMPORTANT"],
+      "snippet": "Invoice #1042 attached for your review.",
+      "payload": {
+        "headers": [
+          {"name": "From", "value": "billing@vendor.com"},
+          {"name": "To", "value": "jermaine@example.com"},
+          {"name": "Subject", "value": "Invoice #1042"},
+          {"name": "Date", "value": "Mon, 2 Mar 2026 11:00:00 +0000"}
+        ],
+        "mimeType": "multipart/mixed",
+        "parts": [
+          {
+            "mimeType": "text/plain",
+            "body": {
+              "data": "UGxlYXNlIGZpbmQgaW52b2ljZSAjMTA0MiBhdHRhY2hlZCBmb3IgeW91ciByZXZpZXcu"
+            }
+          },
+          {
+            "filename": "invoice-1042.pdf",
+            "mimeType": "application/pdf",
+            "body": {
+              "attachmentId": "attach001",
+              "size": 45678
+            }
+          }
+        ]
+      }
+    },
+    "msg003": {
+      "id": "msg003",
+      "threadId": "thread003",
+      "labelIds": ["INBOX"],
+      "snippet": "Your weekly digest is ready.",
+      "payload": {
+        "headers": [
+          {"name": "From", "value": "digest@newsletter.com"},
+          {"name": "To", "value": "jermaine@example.com"},
+          {"name": "Subject", "value": "Weekly Digest: 2 Mar 2026"},
+          {"name": "Date", "value": "Mon, 2 Mar 2026 08:00:00 +0000"}
+        ],
+        "mimeType": "text/plain",
+        "body": {
+          "data": "WW91ciB3ZWVrbHkgZGlnZXN0IGlzIHJlYWR5LiBIZXJlIGFyZSB0aGUgdG9wIHN0b3JpZXMu"
+        }
+      }
+    }
+  },
+  "attachment_data": {
+    "attach001": {
+      "data": "JVBER2Zha2VwZGZjb250ZW50",
+      "size": 45678
+    }
+  }
+}

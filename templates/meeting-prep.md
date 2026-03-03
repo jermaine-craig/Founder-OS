@@ -2,8 +2,6 @@
 
 Always use this exact format when preparing for a meeting.
 
----
-
 ## Template
 
 ```
@@ -20,7 +18,6 @@ Always use this exact format when preparing for a meeting.
 
 ### Recent Conversations
 
-- **[Date]:** [What was discussed or happened]
 - **[Date]:** [What was discussed or happened]
 - **[Date]:** [What was discussed or happened]
 
@@ -40,9 +37,7 @@ Always use this exact format when preparing for a meeting.
 Anything specific you want me to look into before the call?
 ```
 
----
-
-## Example Output
+## Example
 
 ```
 ## Meeting Prep: Partnership Discussion
@@ -59,7 +54,7 @@ Sarah is Head of Partnerships at Acme Corp. She reached out in January about a p
 ### Recent Conversations
 
 - **Jan 28:** She sent over their partnership proposal with revenue share terms
-- **Jan 22:** Discovery call — discussed integration scope, she mentioned Q2 launch goal
+- **Jan 22:** Discovery call, discussed integration scope, she mentioned Q2 launch goal
 - **Jan 15:** Initial outreach from her via LinkedIn, interested in API integration
 
 ### Open Items
@@ -79,53 +74,12 @@ Sarah is Head of Partnerships at Acme Corp. She reached out in January about a p
 Anything specific you want me to look into before the call?
 ```
 
----
-
-## Another Example (Internal Meeting)
-
-```
-## Meeting Prep: Weekly 1:1
-
-**When:** Monday, Feb 10 at 10:00 AM (30 min)
-**With:** Mike Johnson (mike@mycompany.com)
-
----
-
-### Context
-
-Mike is your Head of Engineering. You have a standing weekly 1:1 to discuss team progress, blockers, and priorities.
-
-### Recent Conversations
-
-- **Feb 3:** Discussed hiring timeline, he's interviewing two senior candidates this week
-- **Jan 27:** Talked about Q1 roadmap, API v2 launch is the priority
-- **Jan 20:** He flagged burnout concerns on the team, suggested a team offsite
-
-### Open Items
-
-- Waiting on his recommendation for the senior hire
-- Team offsite planning still pending
-- Q1 roadmap review due next week
-
-### Suggested Talking Points
-
-1. Get update on senior candidate interviews
-2. Check in on team morale and offsite planning
-3. Review Q1 roadmap progress and any blockers
-
----
-
-Anything specific you want me to look into before the call?
-```
-
----
-
 ## Rules
 
-1. **Always check calendar first** — Get meeting time, duration, and attendees
-2. **Search emails for context** — Look for conversations with the attendee(s)
-3. **Recent Conversations in reverse chronological order** — Most recent first
-4. **Keep Context brief** — 2-3 sentences max
-5. **Open Items should be actionable** — Things that need resolution
-6. **Talking Points should be specific** — Not generic like "catch up"
-7. **Always end with the offer to dig deeper**
+1. Always check calendar first for meeting time, duration, attendees
+2. Search emails for context with each attendee
+3. Recent Conversations in reverse chronological order
+4. Keep Context brief (2-3 sentences)
+5. Open Items should be actionable
+6. Talking Points should be specific, not generic
+7. Always end with the offer to dig deeper

@@ -1,80 +1,37 @@
 #!/usr/bin/env python3
 """
 Gmail API tool for Founder OS.
-Fetches emails and creates draft responses.
+Fetches emails, creates drafts, archives messages, and downloads attachments.
 """
 
-import os
 import json
+import html
 import base64
 import argparse
-from pathlib import Path
 from datetime import datetime
 
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-
-# Gmail API scopes
-SCOPES = [
-    'https://www.googleapis.com/auth/gmail.readonly',
-    'https://www.googleapis.com/auth/gmail.compose',
-    'https://www.googleapis.com/auth/gmail.modify',
-]
-
-# Paths
-SCRIPT_DIR = Path(__file__).parent
-CREDS_DIR = SCRIPT_DIR / '.credentials'
-CLIENT_SECRET_PATH = CREDS_DIR / 'client_secret.json'
-TOKEN_PATH = CREDS_DIR / 'gmail_token.json'
-OUTPUT_DIR = SCRIPT_DIR.parent / 'inbox'
+from tools.auth import get_service
+from tools.config import OUTPUT_DIR, TEMP_DIR
 
 
-def get_gmail_service():
-    """Authenticate and return Gmail API service."""
-    creds = None
-
-    if TOKEN_PATH.exists():
-        creds = Credentials.from_authorized_user_file(str(TOKEN_PATH), SCOPES)
-
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            if not CLIENT_SECRET_PATH.exists():
-                print(f"ERROR: Client secret not found at {CLIENT_SECRET_PATH}")
-                print("\nRun 'python3 setup.py' to configure your credentials.")
-                return None
-
-            print("\nOpening browser for Gmail authorization...")
-            print("Sign in with your Google account.\n")
-
-            flow = InstalledAppFlow.from_client_secrets_file(
-                str(CLIENT_SECRET_PATH), SCOPES
-            )
-            creds = flow.run_local_server(port=0)
-
-        # Save token
-        CREDS_DIR.mkdir(parents=True, exist_ok=True)
-        with open(TOKEN_PATH, 'w') as token:
-            token.write(creds.to_json())
-
-    return build('gmail', 'v1', credentials=creds)
+def get_gmail():
+    """Return authenticated Gmail API service."""
+    return get_service('gmail', 'v1')
 
 
 def fetch_emails(max_results=20, query='is:unread', output_file=None):
     """
-    Fetch emails from Gmail and save to inbox folder.
+    Fetch emails from Gmail and save to output folder.
 
     Args:
-        max_results: Maximum number of emails to fetch
-        query: Gmail search query (default: unread emails)
-        output_file: Output filename (default: YYYY-MM-DD-emails.json)
+        max_results: Maximum number of emails to fetch.
+        query: Gmail search query (default: unread emails).
+        output_file: Output filename (default: YYYY-MM-DD-emails.json).
+
+    Returns:
+        List of email dicts, or None if no emails found.
     """
-    service = get_gmail_service()
-    if not service:
-        return
+    service = get_gmail()
 
     print(f"Fetching emails (query: {query})...")
 
@@ -88,7 +45,7 @@ def fetch_emails(max_results=20, query='is:unread', output_file=None):
 
     if not messages:
         print("No emails found.")
-        return
+        return None
 
     emails = []
     for msg in messages:
@@ -100,16 +57,7 @@ def fetch_emails(max_results=20, query='is:unread', output_file=None):
 
         headers = {h['name']: h['value'] for h in full_msg['payload']['headers']}
 
-        # Extract body
-        body = ''
-        payload = full_msg['payload']
-        if 'body' in payload and payload['body'].get('data'):
-            body = base64.urlsafe_b64decode(payload['body']['data']).decode('utf-8')
-        elif 'parts' in payload:
-            for part in payload['parts']:
-                if part['mimeType'] == 'text/plain' and part['body'].get('data'):
-                    body = base64.urlsafe_b64decode(part['body']['data']).decode('utf-8')
-                    break
+        body = _extract_body(full_msg['payload'])
 
         emails.append({
             'id': msg['id'],
@@ -119,12 +67,12 @@ def fetch_emails(max_results=20, query='is:unread', output_file=None):
             'subject': headers.get('Subject', ''),
             'date': headers.get('Date', ''),
             'snippet': full_msg.get('snippet', ''),
-            'body': body[:5000],  # Truncate long emails
+            'body': body[:5000],
             'labels': full_msg.get('labelIds', []),
         })
         print(f"  - {headers.get('Subject', '(no subject)')[:50]}")
 
-    # Save to inbox
+    # Save to output
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     if not output_file:
         output_file = f"{datetime.now().strftime('%Y-%m-%d')}-emails.json"
@@ -137,46 +85,33 @@ def fetch_emails(max_results=20, query='is:unread', output_file=None):
     return emails
 
 
-def text_to_html(text):
-    """Convert plain text to simple HTML, preserving paragraphs."""
-    import html
-    escaped = html.escape(text)
-    paragraphs = escaped.split('\n\n')
-    html_paragraphs = []
-    for p in paragraphs:
-        p = p.replace('\n', '<br>\n')
-        html_paragraphs.append(f'<p style="margin: 0 0 1em 0;">{p}</p>')
-    return '\n'.join(html_paragraphs)
-
-
 def create_draft(to, subject, body, reply_to_id=None, cc=None):
     """
     Create a draft email in Gmail.
 
     Args:
-        to: Recipient email address
-        subject: Email subject
-        body: Email body text
-        reply_to_id: Message ID to reply to (optional)
-        cc: CC recipients, comma-separated (optional)
-    """
-    service = get_gmail_service()
-    if not service:
-        return
+        to: Recipient email address.
+        subject: Email subject.
+        body: Email body text.
+        reply_to_id: Message ID to reply to (optional).
+        cc: CC recipients, comma-separated (optional).
 
-    # Build raw message
+    Returns:
+        Draft resource dict.
+    """
+    service = get_gmail()
+
     headers = f"To: {to}\r\n"
     if cc:
         headers += f"Cc: {cc}\r\n"
     headers += f"Subject: {subject}\r\nContent-Type: text/html; charset=UTF-8\r\n"
 
-    html_body = text_to_html(body)
+    html_body = _text_to_html(body)
     raw_message = f"{headers}\r\n{html_body}"
     raw = base64.urlsafe_b64encode(raw_message.encode('utf-8')).decode('utf-8')
 
     draft_body = {'message': {'raw': raw}}
 
-    # If replying, add thread info
     if reply_to_id:
         original = service.users().messages().get(
             userId='me',
@@ -196,14 +131,12 @@ def create_draft(to, subject, body, reply_to_id=None, cc=None):
 
 def archive_emails(message_ids):
     """
-    Archive emails by removing INBOX label.
+    Archive emails by removing INBOX and UNREAD labels.
 
     Args:
-        message_ids: List of message IDs to archive
+        message_ids: List of message IDs to archive.
     """
-    service = get_gmail_service()
-    if not service:
-        return
+    service = get_gmail()
 
     print(f"Archiving {len(message_ids)} emails...")
 
@@ -223,15 +156,13 @@ def get_attachments(message_id, output_dir=None):
     Download attachments from an email.
 
     Args:
-        message_id: Gmail message ID
-        output_dir: Directory to save attachments
+        message_id: Gmail message ID.
+        output_dir: Directory to save attachments (default: _temp/attachments).
 
     Returns:
-        List of downloaded file paths
+        List of downloaded file paths.
     """
-    service = get_gmail_service()
-    if not service:
-        return []
+    service = get_gmail()
 
     print(f"Fetching attachments for message {message_id}...")
 
@@ -242,9 +173,10 @@ def get_attachments(message_id, output_dir=None):
     ).execute()
 
     if output_dir:
+        from pathlib import Path
         save_dir = Path(output_dir)
     else:
-        save_dir = OUTPUT_DIR / 'attachments'
+        save_dir = TEMP_DIR / 'attachments'
     save_dir.mkdir(parents=True, exist_ok=True)
 
     downloaded = []
@@ -283,17 +215,39 @@ def get_attachments(message_id, output_dir=None):
     return downloaded
 
 
+def _extract_body(payload):
+    """Extract plain text body from email payload."""
+    if 'body' in payload and payload['body'].get('data'):
+        return base64.urlsafe_b64decode(payload['body']['data']).decode('utf-8')
+    elif 'parts' in payload:
+        for part in payload['parts']:
+            if part['mimeType'] == 'text/plain' and part['body'].get('data'):
+                return base64.urlsafe_b64decode(part['body']['data']).decode('utf-8')
+    return ''
+
+
+def _text_to_html(text):
+    """Convert plain text to simple HTML, preserving paragraphs."""
+    escaped = html.escape(text)
+    paragraphs = escaped.split('\n\n')
+    html_paragraphs = []
+    for p in paragraphs:
+        p = p.replace('\n', '<br>\n')
+        html_paragraphs.append(f'<p style="margin: 0 0 1em 0;">{p}</p>')
+    return '\n'.join(html_paragraphs)
+
+
 def main():
     parser = argparse.ArgumentParser(description='Gmail API for Founder OS')
     subparsers = parser.add_subparsers(dest='command', help='Commands')
 
-    # Fetch command
+    # Fetch
     fetch_parser = subparsers.add_parser('fetch', help='Fetch emails from Gmail')
     fetch_parser.add_argument('-n', '--max', type=int, default=20, help='Max emails to fetch')
     fetch_parser.add_argument('-q', '--query', default='is:unread', help='Gmail search query')
     fetch_parser.add_argument('-o', '--output', help='Output filename')
 
-    # Draft command
+    # Draft
     draft_parser = subparsers.add_parser('draft', help='Create a draft email')
     draft_parser.add_argument('--to', required=True, help='Recipient email')
     draft_parser.add_argument('--subject', required=True, help='Email subject')
@@ -301,17 +255,17 @@ def main():
     draft_parser.add_argument('--reply-to', help='Message ID to reply to')
     draft_parser.add_argument('--cc', help='CC recipients (comma-separated)')
 
-    # Archive command
+    # Archive
     archive_parser = subparsers.add_parser('archive', help='Archive emails')
     archive_parser.add_argument('ids', nargs='+', help='Message IDs to archive')
 
-    # Attachments command
+    # Attachments
     attach_parser = subparsers.add_parser('attachments', help='Download attachments')
     attach_parser.add_argument('id', help='Message ID')
     attach_parser.add_argument('-o', '--output', help='Output directory')
 
-    # Auth command
-    auth_parser = subparsers.add_parser('auth', help='Authenticate with Gmail')
+    # Auth
+    subparsers.add_parser('auth', help='Test authentication')
 
     args = parser.parse_args()
 
@@ -324,9 +278,8 @@ def main():
     elif args.command == 'attachments':
         get_attachments(args.id, output_dir=args.output)
     elif args.command == 'auth':
-        service = get_gmail_service()
-        if service:
-            print("Gmail authentication successful!")
+        get_gmail()
+        print("Gmail authentication successful!")
     else:
         parser.print_help()
 

@@ -59,7 +59,7 @@ python3 tools/gdrive.py read FILE_ID
 
 ### 4. Present the briefing
 
-Use the exact format from `assistant/templates/meeting-prep.md`:
+Use the exact format from `templates/meeting-prep.md`:
 
 ```
 ## Meeting Prep: [Meeting Title]

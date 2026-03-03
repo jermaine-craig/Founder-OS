@@ -1,72 +1,30 @@
 #!/usr/bin/env python3
 """
 Google Calendar API tool for Founder OS.
-List, create, and check availability for calendar events.
+List, create, check availability, and delete calendar events.
 """
 
 import json
 import argparse
-from pathlib import Path
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-
-# Calendar API scopes
-SCOPES = [
-    'https://www.googleapis.com/auth/calendar',
-    'https://www.googleapis.com/auth/calendar.events',
-]
-
-# Paths
-SCRIPT_DIR = Path(__file__).parent
-CREDS_DIR = SCRIPT_DIR / '.credentials'
-CLIENT_SECRET_PATH = CREDS_DIR / 'client_secret.json'
-TOKEN_PATH = CREDS_DIR / 'calendar_token.json'
-OUTPUT_DIR = SCRIPT_DIR.parent / 'inbox'
-
-# Default timezone - updated by setup.py
-DEFAULT_TZ = 'Europe/London'
+from tools.auth import get_service
+from tools.config import OUTPUT_DIR, get_timezone
 
 
-def get_calendar_service():
-    """Authenticate and return Calendar API service."""
-    creds = None
-
-    if TOKEN_PATH.exists():
-        creds = Credentials.from_authorized_user_file(str(TOKEN_PATH), SCOPES)
-
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            if not CLIENT_SECRET_PATH.exists():
-                print(f"ERROR: Client secret not found at {CLIENT_SECRET_PATH}")
-                print("\nRun 'python3 setup.py' to configure your credentials.")
-                return None
-
-            print("\nOpening browser for Calendar authorization...")
-            print("Sign in with your Google account.\n")
-
-            flow = InstalledAppFlow.from_client_secrets_file(
-                str(CLIENT_SECRET_PATH), SCOPES
-            )
-            creds = flow.run_local_server(port=0)
-
-        # Save token
-        CREDS_DIR.mkdir(parents=True, exist_ok=True)
-        with open(TOKEN_PATH, 'w') as token:
-            token.write(creds.to_json())
-
-    return build('calendar', 'v3', credentials=creds)
+def get_calendar():
+    """Return authenticated Calendar API service."""
+    return get_service('calendar', 'v3')
 
 
 def parse_datetime(dt_str, tz=None):
-    """Parse datetime string into datetime object."""
-    tz = ZoneInfo(tz or DEFAULT_TZ)
+    """
+    Parse datetime string into timezone-aware datetime object.
+
+    Supports formats: YYYY-MM-DD HH:MM, YYYY-MM-DDTHH:MM, DD/MM/YYYY HH:MM, etc.
+    """
+    tz_info = ZoneInfo(tz or get_timezone())
 
     formats = [
         '%Y-%m-%d %H:%M',
@@ -80,7 +38,7 @@ def parse_datetime(dt_str, tz=None):
     for fmt in formats:
         try:
             dt = datetime.strptime(dt_str, fmt)
-            return dt.replace(tzinfo=tz)
+            return dt.replace(tzinfo=tz_info)
         except ValueError:
             continue
 
@@ -88,7 +46,7 @@ def parse_datetime(dt_str, tz=None):
 
 
 def format_event(event):
-    """Format an event for display."""
+    """Format a calendar event for display."""
     start = event['start'].get('dateTime', event['start'].get('date'))
     end = event['end'].get('dateTime', event['end'].get('date'))
 
@@ -118,13 +76,14 @@ def list_events(days=7, max_results=20, output_file=None):
     List upcoming calendar events.
 
     Args:
-        days: Number of days to look ahead
-        max_results: Maximum number of events
-        output_file: Optional output file
+        days: Number of days to look ahead.
+        max_results: Maximum number of events.
+        output_file: Optional output filename.
+
+    Returns:
+        List of formatted event dicts.
     """
-    service = get_calendar_service()
-    if not service:
-        return
+    service = get_calendar()
 
     now = datetime.utcnow().isoformat() + 'Z'
     end = (datetime.utcnow() + timedelta(days=days)).isoformat() + 'Z'
@@ -157,8 +116,9 @@ def list_events(days=7, max_results=20, output_file=None):
             current_date = fmt['date']
             print(f"\n  {current_date}")
 
-        attendee_str = f" ({len(fmt['attendees'])} attendees)" if fmt['attendees'] else ""
-        print(f"    {fmt['time']} — {fmt['summary']}{attendee_str}")
+        attendee_count = len(fmt['attendees'])
+        attendee_str = f" ({attendee_count} attendees)" if fmt['attendees'] else ""
+        print(f"    {fmt['time']}  {fmt['summary']}{attendee_str}")
 
     if output_file:
         OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -170,27 +130,24 @@ def list_events(days=7, max_results=20, output_file=None):
     return formatted
 
 
-def create_event(summary, start, end=None, duration=60, description='', location='',
-                 attendees=None, timezone=None):
+def create_event(summary, start, end=None, duration=60, description='',
+                 location='', attendees=None, timezone=None):
     """
     Create a calendar event.
 
     Args:
-        summary: Event title
-        start: Start datetime (string)
-        end: End datetime (string, optional)
-        duration: Duration in minutes if end not specified
-        description: Event description
-        location: Event location
-        attendees: List of email addresses
-        timezone: Timezone
+        summary: Event title.
+        start: Start datetime (string).
+        end: End datetime (string, optional).
+        duration: Duration in minutes if end not specified.
+        description: Event description.
+        location: Event location.
+        attendees: List of email addresses.
+        timezone: Timezone override.
     """
-    service = get_calendar_service()
-    if not service:
-        return
+    service = get_calendar()
 
-    tz = timezone or DEFAULT_TZ
-
+    tz = timezone or get_timezone()
     start_dt = parse_datetime(start, tz)
 
     if end:
@@ -239,21 +196,23 @@ def check_availability(date, start_hour=9, end_hour=17):
     Check available slots on a given date.
 
     Args:
-        date: Date to check (YYYY-MM-DD)
-        start_hour: Start of working hours
-        end_hour: End of working hours
-    """
-    service = get_calendar_service()
-    if not service:
-        return
+        date: Date to check (YYYY-MM-DD).
+        start_hour: Start of working hours.
+        end_hour: End of working hours.
 
-    tz = ZoneInfo(DEFAULT_TZ)
+    Returns:
+        Dict with 'busy' and 'free' slot lists.
+    """
+    service = get_calendar()
+
+    tz_name = get_timezone()
+    tz = ZoneInfo(tz_name)
 
     check_date = datetime.strptime(date, '%Y-%m-%d').replace(tzinfo=tz)
     day_start = check_date.replace(hour=start_hour, minute=0)
     day_end = check_date.replace(hour=end_hour, minute=0)
 
-    print(f"Checking availability on {date} ({start_hour}:00 - {end_hour}:00 {DEFAULT_TZ})...")
+    print(f"Checking availability on {date} ({start_hour}:00 - {end_hour}:00 {tz_name})...")
 
     events_result = service.events().list(
         calendarId='primary',
@@ -296,7 +255,7 @@ def check_availability(date, start_hour=9, end_hour=17):
     if busy_slots:
         print("\n  Busy:")
         for slot in busy_slots:
-            print(f"    {slot['start'].strftime('%H:%M')} - {slot['end'].strftime('%H:%M')} — {slot['summary']}")
+            print(f"    {slot['start'].strftime('%H:%M')} - {slot['end'].strftime('%H:%M')}  {slot['summary']}")
 
     if free_slots:
         print("\n  Available:")
@@ -310,10 +269,8 @@ def check_availability(date, start_hour=9, end_hour=17):
 
 
 def delete_event(event_id):
-    """Delete a calendar event."""
-    service = get_calendar_service()
-    if not service:
-        return
+    """Delete a calendar event by ID."""
+    service = get_calendar()
 
     service.events().delete(
         calendarId='primary',
@@ -327,13 +284,13 @@ def main():
     parser = argparse.ArgumentParser(description='Google Calendar API for Founder OS')
     subparsers = parser.add_subparsers(dest='command', help='Commands')
 
-    # List command
+    # List
     list_parser = subparsers.add_parser('list', help='List upcoming events')
     list_parser.add_argument('-d', '--days', type=int, default=7, help='Days to look ahead')
     list_parser.add_argument('-n', '--max', type=int, default=20, help='Max events')
     list_parser.add_argument('-o', '--output', help='Output filename')
 
-    # Create command
+    # Create
     create_parser = subparsers.add_parser('create', help='Create an event')
     create_parser.add_argument('--title', required=True, help='Event title')
     create_parser.add_argument('--start', required=True, help='Start time (YYYY-MM-DD HH:MM)')
@@ -342,20 +299,20 @@ def main():
     create_parser.add_argument('--description', default='', help='Event description')
     create_parser.add_argument('--location', default='', help='Event location')
     create_parser.add_argument('--attendees', nargs='+', help='Attendee emails')
-    create_parser.add_argument('--tz', default=DEFAULT_TZ, help='Timezone')
+    create_parser.add_argument('--tz', help='Timezone override')
 
-    # Availability command
+    # Availability
     avail_parser = subparsers.add_parser('availability', help='Check availability')
     avail_parser.add_argument('date', help='Date to check (YYYY-MM-DD)')
     avail_parser.add_argument('--start-hour', type=int, default=9, help='Working hours start')
     avail_parser.add_argument('--end-hour', type=int, default=17, help='Working hours end')
 
-    # Delete command
+    # Delete
     delete_parser = subparsers.add_parser('delete', help='Delete an event')
     delete_parser.add_argument('event_id', help='Event ID to delete')
 
-    # Auth command
-    auth_parser = subparsers.add_parser('auth', help='Authenticate with Calendar')
+    # Auth
+    subparsers.add_parser('auth', help='Test authentication')
 
     args = parser.parse_args()
 
@@ -377,9 +334,8 @@ def main():
     elif args.command == 'delete':
         delete_event(args.event_id)
     elif args.command == 'auth':
-        service = get_calendar_service()
-        if service:
-            print("Calendar authentication successful!")
+        get_calendar()
+        print("Calendar authentication successful!")
     else:
         parser.print_help()
 

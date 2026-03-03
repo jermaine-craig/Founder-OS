@@ -1,0 +1,62 @@
+{
+  "list_response": {
+    "kind": "drive#fileList",
+    "files": [
+      {
+        "id": "doc001",
+        "name": "Q1 Strategy Document",
+        "mimeType": "application/vnd.google-apps.document",
+        "modifiedTime": "2026-03-02T14:30:00.000Z",
+        "webViewLink": "https://docs.google.com/document/d/doc001/edit"
+      },
+      {
+        "id": "pdf001",
+        "name": "Contract_v2.pdf",
+        "mimeType": "application/pdf",
+        "modifiedTime": "2026-03-01T10:00:00.000Z",
+        "size": "524288",
+        "webViewLink": "https://drive.google.com/file/d/pdf001/view"
+      },
+      {
+        "id": "sheet001",
+        "name": "Budget Tracker 2026",
+        "mimeType": "application/vnd.google-apps.spreadsheet",
+        "modifiedTime": "2026-02-28T16:45:00.000Z",
+        "webViewLink": "https://docs.google.com/spreadsheets/d/sheet001/edit"
+      }
+    ]
+  },
+  "file_metadata": {
+    "doc001": {
+      "id": "doc001",
+      "name": "Q1 Strategy Document",
+      "mimeType": "application/vnd.google-apps.document",
+      "modifiedTime": "2026-03-02T14:30:00.000Z",
+      "createdTime": "2026-01-15T09:00:00.000Z",
+      "webViewLink": "https://docs.google.com/document/d/doc001/edit",
+      "owners": [{"displayName": "Jermaine", "emailAddress": "jermaine@example.com"}],
+      "shared": true
+    },
+    "pdf001": {
+      "id": "pdf001",
+      "name": "Contract_v2.pdf",
+      "mimeType": "application/pdf",
+      "modifiedTime": "2026-03-01T10:00:00.000Z",
+      "createdTime": "2026-02-20T11:00:00.000Z",
+      "size": "524288",
+      "webViewLink": "https://drive.google.com/file/d/pdf001/view",
+      "owners": [{"displayName": "Jermaine", "emailAddress": "jermaine@example.com"}],
+      "shared": false
+    },
+    "sheet001": {
+      "id": "sheet001",
+      "name": "Budget Tracker 2026",
+      "mimeType": "application/vnd.google-apps.spreadsheet",
+      "modifiedTime": "2026-02-28T16:45:00.000Z",
+      "createdTime": "2026-01-10T08:00:00.000Z",
+      "webViewLink": "https://docs.google.com/spreadsheets/d/sheet001/edit",
+      "owners": [{"displayName": "Jermaine", "emailAddress": "jermaine@example.com"}],
+      "shared": true
+    }
+  }
+}
