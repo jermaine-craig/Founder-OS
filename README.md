@@ -1,155 +1,120 @@
 # Founder OS
 
-A personal operating system that handles your email, calendar, and meeting prep — so you can stay in your genius zone.
+A personal operating system that handles your email, calendar, and meeting prep, so you can stay in your genius zone.
 
----
+## What It Does
 
-## What's Included
-
-- **Email triage** — Categorize your inbox and draft replies
-- **Calendar management** — View schedule, check availability, create events
-- **Meeting prep** — Get context on attendees from past email interactions
-- **Natural language** — Just tell Claude what you need
-
----
+- **Email triage**: Categorise your inbox, draft replies, archive with approval
+- **Calendar management**: View schedule, check availability, create events
+- **Meeting prep**: Context from emails and Drive for every meeting
+- **Research**: Look up topics with Perplexity (optional)
 
 ## Quick Start
 
-### Install
-
 ```bash
-curl -fsSL https://os.engineering/install | bash
+# Clone the repo
+git clone https://github.com/jermaine-craig/Founder-OS.git
+cd Founder-OS
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run setup wizard
+python3 setup.py
 ```
 
-This downloads Founder OS into a `founder-os` folder wherever you run it.
-
-### Run the setup wizard
-
-```bash
-cd founder-os && ./setup
-```
-
-The wizard will walk you through:
+The wizard guides you through:
 - Creating a Google Cloud project
-- Enabling Gmail and Calendar APIs
-- Connecting your Google account
-- Setting your timezone
+- Enabling Gmail, Calendar, and Drive APIs
+- Authenticating your account
+- Configuring your name and timezone
+- Optional Perplexity API key for research
 
-### Open Claude Code
+Then open Claude Code:
 
 ```bash
 claude
 ```
 
-### Start talking
+## Usage
 
 Just ask for what you need:
 
 ```
 "Help me with my emails"
-
 "What's on my calendar this week?"
-
-"Can you schedule a call between me and john@example.com for next Tuesday?"
-
-"Help me prepare for my meeting with Sarah tomorrow"
-
 "When am I free on Friday?"
+"Prep for my call with Sarah tomorrow"
+"Find the meeting transcript from last week"
 ```
 
----
+Or use slash commands for guided workflows:
 
-## What You Can Ask
-
-### Email
-
-- "Help me with my emails"
-- "Check my inbox"
-- "Draft a reply to the email from John"
-- "Archive the newsletters"
-
-### Calendar
-
-- "What's on my calendar today?"
-- "When am I free this week?"
-- "Schedule a 30-minute call with sarah@example.com on Thursday at 2pm"
-- "What meetings do I have tomorrow?"
-
-### Meeting Prep
-
-- "Help me prepare for my meeting with David"
-- "What's the context on my call with Acme Corp?"
-- "Pull up my past conversations with jane@example.com"
-
----
+| Command | What it does |
+|---------|-------------|
+| `/triage` | Process your inbox, categorise, draft replies |
+| `/calendar` | Check schedule, availability, create events |
+| `/meeting-prep` | Prepare for a meeting with full context |
+| `/research` | Research a topic with Perplexity |
 
 ## How It Works
 
-1. **Gmail API** — fetches your emails, creates drafts, archives messages
-2. **Calendar API** — reads your schedule, checks availability, creates events
-3. **Claude** — understands what you need and uses the right tools
-4. **You stay in control** — nothing sends or archives without your approval
+```
+You (natural language) → Claude → Tools (Python) → Google APIs
+                                ↓
+                          You stay in control
+                    (nothing sends without approval)
+```
 
----
-
-## Make It Your Own
-
-This is your OS. Claude can help you customize it.
-
-Just ask:
-- "Add a workflow that summarizes my week every Friday"
-- "Change how you categorize my emails"
-- "Create a command that pulls my meeting notes"
-- "Add Notion integration"
-
-The configuration lives in `.claude/CLAUDE.md`. You can edit it directly or ask Claude to modify it for you.
-
----
+- **Tools** (`tools/`): Python scripts that talk to Google APIs. Deterministic, testable.
+- **Skills** (`.claude/skills/`): Instructions that tell Claude when and how to use the tools.
+- **Templates** (`templates/`): Consistent output formats for email triage, drafts, meeting briefs.
 
 ## Folder Structure
 
 ```
 founder-os/
-├── .claude/              # Your OS configuration
-│   └── CLAUDE.md         # Instructions and rules
-├── _tools/               # Gmail and Calendar integrations
-├── _logs/                # Daily execution logs
-├── inbox/                # Email exports
-├── assistant/            # Workflow documentation
-├── setup                 # Setup wizard
-└── setup.py              # Setup wizard (Python)
+├── .claude/
+│   ├── CLAUDE.md              # System prompt and rules
+│   └── skills/                # Slash command workflows
+│       ├── triage/
+│       ├── calendar/
+│       ├── meeting-prep/
+│       └── research/
+├── tools/                     # Python API tools
+│   ├── auth.py                # Shared Google OAuth
+│   ├── config.py              # User settings
+│   ├── gmail.py               # Gmail API
+│   ├── gcal.py                # Google Calendar API
+│   └── gdrive.py              # Google Drive API
+├── tests/                     # Test suite
+├── templates/                 # Output format templates
+├── output/                    # Workflow outputs
+├── setup.py                   # Setup wizard
+└── requirements.txt           # Dependencies
 ```
-
----
 
 ## Requirements
 
-- Python 3.8+
-- Google account with Gmail and Calendar
+- Python 3.9+
+- Google account (Gmail, Calendar, Drive)
 - [Claude Code](https://claude.ai/code)
+- Perplexity API key (optional, for research)
 
----
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add new tools and skills.
 
 ## Troubleshooting
 
-### "Client secret not found"
+**"Client secret not found"**: Run `python3 setup.py`
 
-Run the setup wizard: `./setup`
+**"Token expired"**: Delete `.credentials/token.json` and run `python3 setup.py`
 
-### "Token expired"
+**"Access blocked"**: Add yourself as a test user in Google Cloud OAuth consent screen.
 
-Ask Claude: "Re-authenticate my Gmail and Calendar"
+## Licence
 
-### "Access blocked"
-
-Make sure you added yourself as a test user in the Google Cloud OAuth consent screen.
-
----
-
-## License
-
-MIT — use it however you want.
-
----
+MIT
 
 Built by [Other Shapes](https://other-shapes.com)
